@@ -132,6 +132,7 @@
         _magicView.delegate = self;
         _magicView.dataSource = self;
         _magicView.currentNavigationController = self.navigationController;
+        _magicView.edgesForExtendedLayout = self.edgesForExtendedLayout;
         [self.view setNeedsLayout];
     }
     return _magicView;

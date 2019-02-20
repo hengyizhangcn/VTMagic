@@ -143,8 +143,10 @@ BOOL isIPhoneX() {
     CGSize size = self.frame.size;
     CGFloat topY = _againstStatusBar ? VTSTATUSBAR_HEIGHT : 0;
     
-    //view从(0,0)开始，其它视图布局从导航栏下方开始
-    topY = VTSTATUSBAR_HEIGHT + [self figureNavigationHeight];
+    if (self.edgesForExtendedLayout == UIRectEdgeAll) {
+        //view从(0,0)开始，其它视图布局从导航栏下方开始
+        topY = VTSTATUSBAR_HEIGHT + [self figureNavigationHeight];
+    }
     CGFloat headerY = _headerHidden ? -_headerHeight : topY;
     _headerView.frame = CGRectMake(0, headerY, size.width, _headerHeight);
     

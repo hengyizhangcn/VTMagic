@@ -393,6 +393,10 @@ NS_ASSUME_NONNULL_BEGIN
  *  当前导航栏
  */
 @property (nonatomic, weak) UINavigationController *currentNavigationController;
+/**
+ 边缘扩展布局
+ */
+@property(nonatomic,assign) UIRectEdge edgesForExtendedLayout;
 
 
 #pragma mark - public method
