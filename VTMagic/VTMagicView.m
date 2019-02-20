@@ -115,9 +115,36 @@ static const void *kVTMagicView = &kVTMagicView;
     }
 }
 
+BOOL isIPhoneX() {
+    
+    BOOL iPhoneX = NO;
+    /// 先判断设备是否是iPhone/iPod
+    if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) {
+        return iPhoneX;
+    }
+    
+    if (@available(iOS 11.0, *)) {
+        /// 利用safeAreaInsets.bottom > 0.0来判断是否是iPhone X。
+        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+        if (mainWindow.safeAreaInsets.bottom > 0.0) {
+            iPhoneX = YES;
+        }
+    }
+    
+    return iPhoneX;
+}
+
+- (CGFloat)figureNavigationHeight
+{
+    return self.currentNavigationController.navigationBar.frame.size.height;
+}
+
 - (void)updateFrameForSubviews {
     CGSize size = self.frame.size;
     CGFloat topY = _againstStatusBar ? VTSTATUSBAR_HEIGHT : 0;
+    
+    //view从(0,0)开始，其它视图布局从导航栏下方开始
+    topY = VTSTATUSBAR_HEIGHT + [self figureNavigationHeight];
     CGFloat headerY = _headerHidden ? -_headerHeight : topY;
     _headerView.frame = CGRectMake(0, headerY, size.width, _headerHeight);
     

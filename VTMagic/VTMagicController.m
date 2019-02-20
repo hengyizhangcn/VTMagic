@@ -20,7 +20,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
-            self.edgesForExtendedLayout = UIRectEdgeNone;
+//            self.edgesForExtendedLayout = UIRectEdgeNone;
         } else if ([self respondsToSelector:@selector(setWantsFullScreenLayout:)]) {
             [self setValue:@YES forKey:@"wantsFullScreenLayout"];
         }
@@ -131,6 +131,7 @@
         _magicView.magicController = self;
         _magicView.delegate = self;
         _magicView.dataSource = self;
+        _magicView.currentNavigationController = self.navigationController;
         [self.view setNeedsLayout];
     }
     return _magicView;

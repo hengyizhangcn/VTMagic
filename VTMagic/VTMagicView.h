@@ -389,6 +389,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign, readonly) VTSwitchEvent switchEvent;
 
+/**
+ *  当前导航栏
+ */
+@property (nonatomic, weak) UINavigationController *currentNavigationController;
+
 
 #pragma mark - public method
 /**************************************public method**************************************/
