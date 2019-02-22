@@ -99,6 +99,7 @@ static const void *kVTMagicView = &kVTMagicView;
     _needPreloading = YES;
     _switchAnimated = YES;
     _menuScrollEnabled = YES;
+    self.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)dealloc {
@@ -142,15 +143,6 @@ BOOL isIPhoneX() {
 - (void)updateFrameForSubviews {
     CGSize size = self.frame.size;
     CGFloat topY = _againstStatusBar ? VTSTATUSBAR_HEIGHT : 0;
-    
-    if (@available(iOS 7.0, *)) {
-        if (self.edgesForExtendedLayout == UIRectEdgeAll && self.currentNavigationController != nil) {
-            //view从(0,0)开始，其它视图布局从导航栏下方开始
-            topY = VTSTATUSBAR_HEIGHT + [self figureNavigationHeight];
-        }
-    } else {
-        // Fallback on earlier versions
-    }
     CGFloat headerY = _headerHidden ? -_headerHeight : topY;
     _headerView.frame = CGRectMake(0, headerY, size.width, _headerHeight);
     
@@ -187,6 +179,29 @@ BOOL isIPhoneX() {
     
     [self updateFrameForLeftNavigationItem];
     [self updateFrameForRightNavigationItem];
+    
+    for (UIView *subView in self.subviews) {
+        if (@available(iOS 7.0, *)) {
+            
+            //这里只考虑headerView\navigationView\contentView
+            if (self.edgesForExtendedLayout == UIRectEdgeAll
+                && self.currentNavigationController != nil
+                && (subView == _headerView || subView == _navigationView || subView == _contentView)) {
+                //view从(0,0)开始，其它视图布局从导航栏下方开始
+                CGRect frame = subView.frame;
+                
+                CGFloat offset = VTSTATUSBAR_HEIGHT + [self figureNavigationHeight];
+                frame.origin.y += offset;
+                
+                if (subView == _contentView) { //内容视图高度需减小
+                    frame.size.height -= offset;
+                }
+                subView.frame = frame;
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+    }
 }
 
 - (void)updateFrameForLeftNavigationItem {
