@@ -141,12 +141,24 @@ BOOL isIPhoneX() {
 }
 
 - (void)updateFrameForSubviews {
+    
+    //这里只考虑headerView\navigationView\contentView
+    CGFloat offset = 0.0;
+    if (@available(iOS 7.0, *)) {
+        if (self.edgesForExtendedLayout == UIRectEdgeAll && self.currentNavigationController != nil) {
+            //view从(0,0)开始，其它视图布局从导航栏下方开始
+            offset = VTSTATUSBAR_HEIGHT + [self figureNavigationHeight];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+    
     CGSize size = self.frame.size;
     CGFloat topY = _againstStatusBar ? VTSTATUSBAR_HEIGHT : 0;
-    CGFloat headerY = _headerHidden ? -_headerHeight : topY;
+    CGFloat headerY = offset + (_headerHidden ? -_headerHeight : topY);
     _headerView.frame = CGRectMake(0, headerY, size.width, _headerHeight);
     
-    CGFloat navigationY = _headerHidden ? 0 : CGRectGetMaxY(_headerView.frame);
+    CGFloat navigationY = _headerHidden ? (0 + offset) : CGRectGetMaxY(_headerView.frame);
     CGFloat navigationH = _navigationHeight + (_headerHidden ? topY : 0);
     _navigationView.frame = CGRectMake(0, navigationY, size.width, navigationH);
     
@@ -179,29 +191,6 @@ BOOL isIPhoneX() {
     
     [self updateFrameForLeftNavigationItem];
     [self updateFrameForRightNavigationItem];
-    
-    for (UIView *subView in self.subviews) {
-        if (@available(iOS 7.0, *)) {
-            
-            //这里只考虑headerView\navigationView\contentView
-            if (self.edgesForExtendedLayout == UIRectEdgeAll
-                && self.currentNavigationController != nil
-                && (subView == _headerView || subView == _navigationView || subView == _contentView)) {
-                //view从(0,0)开始，其它视图布局从导航栏下方开始
-                CGRect frame = subView.frame;
-                
-                CGFloat offset = VTSTATUSBAR_HEIGHT + [self figureNavigationHeight];
-                frame.origin.y += offset;
-                
-                if (subView == _contentView) { //内容视图高度需减小
-                    frame.size.height -= offset;
-                }
-                subView.frame = frame;
-            }
-        } else {
-            // Fallback on earlier versions
-        }
-    }
 }
 
 - (void)updateFrameForLeftNavigationItem {
